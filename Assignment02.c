@@ -119,40 +119,45 @@ void displayList()
     printf("\n");
 }
 
-void traverseList(int step, char* code)
+void traverseList()
 {
-    // empty list
-    if (isEmpty())
+    int step, chr, i;
+    LINK cur = header->next;
+    scanf("%d", &step);
+    
+    for (i=1, i<=step, i++)
     {
-        printf("no\n");
-        return;
-    }
-
-    int i, right = 0;
-    for (i=0; i<step; i++)
-    {
-        if (*code == 'L')
-            right--;
-        else if (*code == 'R')
-            right++;
-        code++;
-    }
-
-    LINK cur=header->next;
-    if (right > 0)
-    {
-        int size = getSize(header);
-        if (right >= size)
-            cur = trailer->prev;
-        else
+        scanf("%c", &chr);
+        
+        // empty list
+        if (cur == trailer)
+            continue;
+        
+        else if (chr=='L')
         {
-            for (i=1; i<=right; i++)
-            {
-                cur = cur->next;
-            }
+            // leftmost
+            if (cur->prev == header)
+                continue;
+            
+            else
+                cur = cur->prev;
         }
+        
+        else if (chr=='R')
+        {
+            // rightmost
+            if (cur->next == trailer)
+                continue;
+            
+            else
+                cur = cur->next;
     }
-    printf("%d\n", cur->item);
+
+    if (cur == trailer)
+        printf("no\n");
+        
+    else
+        printf("%d\n", cur->item);
 }
 
 void freeAll()
@@ -169,8 +174,7 @@ void freeAll()
 int main()
 {
     generateDLL();
-    int n, val, step;
-    char* code;    
+    int n, val;    
     do
     {
         scanf("%d", &n);
@@ -203,10 +207,7 @@ int main()
                 displayList();
                 break;
             case 8:
-                scanf("%d", &step);
-                code = (char*) malloc(sizeof(char)*(1+step));
-                scanf("%s", code);
-                traverseList(step, code);
+                traverseList();
                 break;
             case 9:
                 exit(0);
