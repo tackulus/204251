@@ -159,6 +159,159 @@ void traverseList()
     else
         printf("%d\n", cur->item);
 }
+//
+// Assignment02.c
+// 204251 Data Structure
+//
+// Kasidis Torcharoen
+// 610510531
+//
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+struct node_D{
+    struct node_D* prev;
+    int    item;
+    struct node_D* next;
+};
+
+typedef struct node_D NODE;
+typedef NODE* LINK;
+
+LINK header, trailer;
+
+void generateDLL()
+{
+    header = (LINK) malloc(sizeof(NODE));
+    trailer = (LINK) malloc(sizeof(NODE));
+    header->prev = NULL;
+    header->next = trailer;
+    trailer->prev = header;
+    trailer->next = NULL;
+}
+
+bool isEmpty()
+{
+    return (header->next == trailer);
+}
+
+int getSize(LINK cur)
+{
+    if (cur->next == trailer)
+        return 0;
+    else 
+        return (1 + getSize(cur->next));
+}
+
+void insertFirst(int val)
+{
+    // create new node
+    LINK ptr = (LINK) malloc(sizeof(NODE));
+    ptr->item = val;
+
+    // redirect link
+    header->next->prev = ptr;
+    ptr->prev = header;
+    ptr->next = header->next;
+    header->next = ptr;
+}
+
+void insertLast(int val)
+{
+    // create new node
+    LINK ptr = (LINK) malloc(sizeof(NODE));
+    ptr->item = val;
+
+    // redirect link
+    trailer->prev->next = ptr;
+    ptr->next = trailer;
+    ptr->prev = trailer->prev;
+    trailer->prev = ptr;
+}
+
+void removeFirst()
+{
+    // empty list
+    if (isEmpty())
+        return;
+
+    // locate node
+    LINK del = header->next;
+
+    // redirect link
+    header->next = del->next;
+    del->next->prev = header;
+
+    // free memory
+    free(del);
+}
+
+void removeLast()
+{
+    // empty list
+    if (isEmpty())
+        return;
+
+    // locate node
+    LINK del = trailer->prev;
+    
+    // redirect link
+    trailer->prev = del->prev;
+    del->prev->next = trailer;
+    
+    // free memory
+    free(del);
+}
+
+void displayList()
+{
+    // empty list
+    if (isEmpty())
+        return;
+    
+    LINK cur=header->next;
+    while (cur != trailer)
+    {
+        printf("%d ", cur->item);
+        cur = cur->next;
+    }
+    printf("\n");
+}
+
+void traverseList()
+{
+    int step;
+    scanf("%d", &step);
+    char* code;
+    code = (char*) malloc(sizeof(1+step));
+    scanf("%s", code);
+
+    // empty list
+    if (isEmpty())
+    {
+        printf("no\n");
+        return;
+    }
+
+    int i, index = 1, size = getSize(header);
+    for (i=0; i<step; i++)
+    {
+        if (*code == 'L')
+            index = (index-1 >= 1) ? index-1 : index;
+        else if (*code == 'R')
+            index = (index+1 <= size) ? index+1 : index;
+        code++;
+    }
+
+    LINK cur=header;
+    for (i=0; i<index; i++)
+    {
+        cur = cur->next;
+    }
+    printf("%d\n", cur->item);
+}
 
 void freeAll()
 {
@@ -174,7 +327,8 @@ void freeAll()
 int main()
 {
     generateDLL();
-    int n, val;    
+    int n, val, step;
+    char* code;    
     do
     {
         scanf("%d", &n);
