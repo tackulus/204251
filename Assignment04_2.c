@@ -105,7 +105,7 @@ void printPostfix(char* exps)
 
 int main()
 {
-    char exps;
+    char* exps=(char*) malloc(100*sizeof(char));
     scanf("%s", exps);
     printPostfix(exps);
     return 0;
